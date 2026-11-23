@@ -1,0 +1,47 @@
+{
+  "n_ratings": 979478,
+  "n_users": 53424,
+  "n_books": 10000,
+  "n_tags": 34252,
+  "n_book_tags": 999912,
+  "ratings": {
+    "mean_rating": 3.856,
+    "median_rating": 4.0,
+    "share_ge_4_percent": 66.2,
+    "share_le_2_percent": 8.4
+  },
+  "users": {
+    "ratings_per_user_quantiles": {
+      "0.01": 2,
+      "0.05": 2,
+      "0.5": 8,
+      "0.95": 70,
+      "0.99": 134
+    },
+    "top1_percent_threshold": 134,
+    "top1_percent_users": 544,
+    "min_ratings_per_user": 1,
+    "users_lt6_ratings_percent": 39.3
+  },
+  "books": {
+    "median_ratings_per_book": 100,
+    "max_ratings_per_book": 100,
+    "min_ratings_per_book": 8,
+    "books_with_full_budget": 6248,
+    "total_median_ratings": 23832,
+    "total_max_ratings": 4942365,
+    "top_1_percent_share": 22.8,
+    "top_5_percent_share": 44.9,
+    "top_10_percent_share": 56.4
+  },
+  "tags": {
+    "unique_tags": 31520,
+    "avg_tags_per_book": 95.0
+  },
+  "matrix": {
+    "cells": 534240000,
+    "filled": 979478,
+    "density_percent": 0.183,
+    "dense_size_gb": 2.0
+  }
+}

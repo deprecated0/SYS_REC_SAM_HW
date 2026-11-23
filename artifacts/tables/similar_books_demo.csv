@@ -1,0 +1,16 @@
+source_book_id,source_title,rank,book_id,title,authors,cosine
+1,"The Hunger Games (The Hunger Games, #1)",1,20,"Mockingjay (The Hunger Games, #3)",Suzanne Collins,0.933
+1,"The Hunger Games (The Hunger Games, #1)",2,17,"Catching Fire (The Hunger Games, #2)",Suzanne Collins,0.927
+1,"The Hunger Games (The Hunger Games, #1)",3,507,"The Hunger Games Trilogy Boxset (The Hunger Games, #1-3)",Suzanne Collins,0.877
+1,"The Hunger Games (The Hunger Games, #1)",4,717,The Hunger Games: Official Illustrated Movie Companion,Kate Egan,0.608
+1,"The Hunger Games (The Hunger Games, #1)",5,1355,The Hunger Games Tribute Guide,Emily Seife,0.572
+7,The Hobbit,1,189,"The Lord of the Rings (The Lord of the Rings, #1-3)",J.R.R. Tolkien,0.766
+7,The Hobbit,2,611,The Silmarillion (Middle-Earth Universe),"J.R.R. Tolkien, Christopher Tolkien, Ted Nasmith",0.717
+7,The Hobbit,3,155,"The Two Towers (The Lord of the Rings, #2)",J.R.R. Tolkien,0.701
+7,The Hobbit,4,19,"The Fellowship of the Ring (The Lord of the Rings, #1)",J.R.R. Tolkien,0.682
+7,The Hobbit,5,161,"The Return of the King (The Lord of the Rings, #3)",J.R.R. Tolkien,0.672
+13,1984,1,48,Fahrenheit 451,Ray Bradbury,0.727
+13,1984,2,55,Brave New World,Aldous Huxley,0.723
+13,1984,3,14,Animal Farm,George Orwell,0.626
+13,1984,4,846,Animal Farm / 1984,"George Orwell, Christopher Hitchens",0.613
+13,1984,5,173,A Clockwork Orange,Anthony Burgess,0.61

@@ -1,0 +1,179 @@
+stages:
+  eda:
+    cmd: python -m src.stage1_eda
+    deps:
+      - data/ratings.csv
+      - data/books.csv
+      - data/tags.csv
+      - data/book_tags.csv
+      - src/stage1_eda.py
+      - src/config.py
+      - src/io_utils.py
+    params:
+      - min_ratings_popular
+    plots:
+      - artifacts/figures/rating_distribution.png
+      - artifacts/figures/user_activity.png
+      - artifacts/figures/book_popularity.png
+      - artifacts/figures/rating_vs_count.png
+      - artifacts/figures/tags_top20.png
+    outs:
+      - artifacts/tables/top10_popular_books.csv
+      - artifacts/tables/trap_low_counts.csv
+      - artifacts/tables/eda_summary.json
+
+  split:
+    cmd: python -m src.stage2_split
+    deps:
+      - data/ratings.csv
+      - src/stage2_split.py
+      - src/config.py
+      - src/io_utils.py
+    params:
+      - random_state
+      - test_holdout
+      - min_train_ratings
+    outs:
+      - artifacts/split/train.csv
+      - artifacts/split/test.csv
+      - artifacts/split/index_maps.npz
+      - artifacts/tables/split_summary.json
+
+  base_models:
+    cmd: python -m src.stage3_base_models
+    deps:
+      - artifacts/split/train.csv
+      - artifacts/split/index_maps.npz
+      - data/books.csv
+      - data/tags.csv
+      - data/book_tags.csv
+      - src/stage3_base_models.py
+      - src/config.py
+      - src/io_utils.py
+      - src/models.py
+    params:
+      - random_state
+      - relevance_threshold
+      - min_ratings_popular
+      - content.min_df
+    outs:
+      - artifacts/models/pop_scores.npy
+      - artifacts/models/item_profiles.npz
+      - artifacts/models/fav_train.npz
+      - artifacts/tables/pop_stats.csv
+      - artifacts/tables/popular_top10_train.csv
+      - artifacts/tables/similar_books_demo.csv
+
+  itemcf:
+    cmd: python -m src.stage4_itemcf
+    deps:
+      - artifacts/split/train.csv
+      - artifacts/split/test.csv
+      - artifacts/split/index_maps.npz
+      - src/stage4_itemcf.py
+      - src/config.py
+      - src/io_utils.py
+      - src/models.py
+    params:
+      - random_state
+      - relevance_threshold
+      - top_k_neighbours
+      - shrinkage_lambda
+    outs:
+      - artifacts/models/R_train.npz
+      - artifacts/models/S_topk.npz
+      - artifacts/models/item_mean.npy
+      - artifacts/tables/itemcf_demo.csv
+
+  svd:
+    cmd: python -m src.stage5_svd
+    deps:
+      - artifacts/split/train.csv
+      - artifacts/split/test.csv
+      - artifacts/split/index_maps.npz
+      - artifacts/models/R_train.npz
+      - artifacts/models/S_topk.npz
+      - artifacts/models/item_mean.npy
+      - src/stage5_svd.py
+      - src/config.py
+      - src/io_utils.py
+      - src/models.py
+    params:
+      - random_state
+      - chunk
+      - top_k_neighbours
+      - svd.n_factors
+      - svd.n_epochs
+    metrics:
+      - artifacts/tables/rmse_table.csv
+    outs:
+      - artifacts/models/svd_bundle.npz
+
+  evaluate:
+    cmd: python -m src.stage6_evaluate
+    deps:
+      - artifacts/split/train.csv
+      - artifacts/split/test.csv
+      - artifacts/split/index_maps.npz
+      - artifacts/models/pop_scores.npy
+      - artifacts/models/item_profiles.npz
+      - artifacts/models/fav_train.npz
+      - artifacts/models/R_train.npz
+      - artifacts/models/S_topk.npz
+      - artifacts/models/item_mean.npy
+      - artifacts/models/svd_bundle.npz
+      - src/stage6_evaluate.py
+      - src/config.py
+      - src/io_utils.py
+      - src/metrics.py
+      - src/models.py
+    params:
+      - random_state
+      - relevance_threshold
+      - n_recs
+      - chunk
+      - top_k_neighbours
+      - svd.n_factors
+    metrics:
+      - artifacts/tables/metrics_main.csv
+    plots:
+      - artifacts/figures/metrics_bar.png
+
+  hybrid_cold:
+    cmd: python -m src.stage7_hybrid_cold
+    deps:
+      - artifacts/tables/metrics_main.csv
+      - artifacts/split/train.csv
+      - artifacts/split/test.csv
+      - artifacts/split/index_maps.npz
+      - artifacts/models/pop_scores.npy
+      - artifacts/models/item_profiles.npz
+      - artifacts/models/fav_train.npz
+      - artifacts/models/R_train.npz
+      - artifacts/models/S_topk.npz
+      - artifacts/models/item_mean.npy
+      - artifacts/models/svd_bundle.npz
+      - src/stage7_hybrid_cold.py
+      - src/config.py
+      - src/io_utils.py
+      - src/metrics.py
+      - src/models.py
+    params:
+      - random_state
+      - relevance_threshold
+      - n_recs
+      - chunk
+      - min_ratings_popular
+      - top_k_neighbours
+      - svd.n_factors
+      - hybrid.w_main
+      - hybrid.w_prior
+      - cold.n_users
+      - cold.keep_ratings
+      - cold.svd_epochs
+      - cold.w_content
+    metrics:
+      - artifacts/tables/metrics_full.csv
+      - artifacts/tables/metrics_cold.csv
+    plots:
+      - artifacts/figures/metrics_final.png

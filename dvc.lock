@@ -1,0 +1,468 @@
+schema: '2.0'
+stages:
+  eda:
+    cmd: python -m src.stage1_eda
+    deps:
+    - path: data/book_tags.csv
+      hash: md5
+      md5: 6737224d6c909864b516da7f4f7bc80e
+      size: 16665883
+    - path: data/books.csv
+      hash: md5
+      md5: 2ba8155d6d7b87804b0bc884a7ba0275
+      size: 3296741
+    - path: data/ratings.csv
+      hash: md5
+      md5: d9f6e46055505c892180824e64b2234a
+      size: 12437766
+    - path: data/tags.csv
+      hash: md5
+      md5: 62d407b3d6bb6fbe00fc4a48ec36d012
+      size: 722480
+    - path: src/config.py
+      hash: md5
+      md5: 26c8093064cc1dba282184f864cd99c3
+      size: 889
+    - path: src/io_utils.py
+      hash: md5
+      md5: 9816ceee5f5c44a119fb96814d7c94ed
+      size: 3552
+    - path: src/stage1_eda.py
+      hash: md5
+      md5: db27aa137686bdfcd6d7af18f92cefb5
+      size: 10057
+    params:
+      params.yaml:
+        min_ratings_popular: 100
+    outs:
+    - path: artifacts/figures/book_popularity.png
+      hash: md5
+      md5: 251ab01ba360a5dd7b2b22f23f376c27
+      size: 72235
+    - path: artifacts/figures/rating_distribution.png
+      hash: md5
+      md5: 853970d7734645b384b9b9289f0d4922
+      size: 30365
+    - path: artifacts/figures/rating_vs_count.png
+      hash: md5
+      md5: c42c60e89a63db1bbeb24707f42ac259
+      size: 74325
+    - path: artifacts/figures/tags_top20.png
+      hash: md5
+      md5: 5a6e863dd2dccccb34e70b5709f69589
+      size: 46225
+    - path: artifacts/figures/user_activity.png
+      hash: md5
+      md5: 4173f49b1c11d699c2eadbc6db92d986
+      size: 62083
+    - path: artifacts/tables/eda_summary.json
+      hash: md5
+      md5: 45f5f9a379cff2bb6b80c2083c00352a
+      size: 1086
+    - path: artifacts/tables/top10_popular_books.csv
+      hash: md5
+      md5: bf902a5fd990fdcaf5046f3658e9e631
+      size: 702
+    - path: artifacts/tables/trap_low_counts.csv
+      hash: md5
+      md5: c39b0f144aaf53ab96b8843b68cfb0e7
+      size: 288
+  split:
+    cmd: python -m src.stage2_split
+    deps:
+    - path: data/ratings.csv
+      hash: md5
+      md5: d9f6e46055505c892180824e64b2234a
+      size: 12437766
+    - path: src/config.py
+      hash: md5
+      md5: 26c8093064cc1dba282184f864cd99c3
+      size: 889
+    - path: src/io_utils.py
+      hash: md5
+      md5: 9816ceee5f5c44a119fb96814d7c94ed
+      size: 3552
+    - path: src/stage2_split.py
+      hash: md5
+      md5: 0bbdaee6a87a788fa096ab5dd70c3d6d
+      size: 2729
+    params:
+      params.yaml:
+        min_train_ratings: 6
+        random_state: 42
+        test_holdout: 2
+    outs:
+    - path: artifacts/split/index_maps.npz
+      hash: md5
+      md5: 20c5238fec47ffc85b7cd6099c28f78d
+      size: 507910
+    - path: artifacts/split/test.csv
+      hash: md5
+      md5: caab1df5a7e44e7a8bbf3ce9a1d87f2b
+      size: 1590056
+    - path: artifacts/split/train.csv
+      hash: md5
+      md5: b90cf48be691afd456d0e5a78e49acdc
+      size: 22248674
+    - path: artifacts/tables/split_summary.json
+      hash: md5
+      md5: e9af006b9e0a894c597cb1f35ceca07d
+      size: 278
+  base_models:
+    cmd: python -m src.stage3_base_models
+    deps:
+    - path: artifacts/split/index_maps.npz
+      hash: md5
+      md5: 20c5238fec47ffc85b7cd6099c28f78d
+      size: 507910
+    - path: artifacts/split/train.csv
+      hash: md5
+      md5: b90cf48be691afd456d0e5a78e49acdc
+      size: 22248674
+    - path: data/book_tags.csv
+      hash: md5
+      md5: 6737224d6c909864b516da7f4f7bc80e
+      size: 16665883
+    - path: data/books.csv
+      hash: md5
+      md5: 2ba8155d6d7b87804b0bc884a7ba0275
+      size: 3296741
+    - path: data/tags.csv
+      hash: md5
+      md5: 62d407b3d6bb6fbe00fc4a48ec36d012
+      size: 722480
+    - path: src/config.py
+      hash: md5
+      md5: 26c8093064cc1dba282184f864cd99c3
+      size: 889
+    - path: src/io_utils.py
+      hash: md5
+      md5: 9816ceee5f5c44a119fb96814d7c94ed
+      size: 3552
+    - path: src/models.py
+      hash: md5
+      md5: 6385604d287931796a55836d522fb849
+      size: 11422
+    - path: src/stage3_base_models.py
+      hash: md5
+      md5: fad1cd90b0c16112b068191986edba09
+      size: 3989
+    params:
+      params.yaml:
+        content.min_df: 3
+        min_ratings_popular: 100
+        random_state: 42
+        relevance_threshold: 4
+    outs:
+    - path: artifacts/models/fav_train.npz
+      hash: md5
+      md5: e9ee487b8d003ef2b2974d8615ff2926
+      size: 1555912
+    - path: artifacts/models/item_profiles.npz
+      hash: md5
+      md5: 7cac134b3c2a99a3aa41ef291f637276
+      size: 6056915
+    - path: artifacts/models/pop_scores.npy
+      hash: md5
+      md5: 1ef820b2453b9336fad1b7494a0fcae1
+      size: 40128
+    - path: artifacts/tables/pop_stats.csv
+      hash: md5
+      md5: dfec3737cbdbc18af4091406d7738e77
+      size: 261337
+    - path: artifacts/tables/popular_top10_train.csv
+      hash: md5
+      md5: bb4bf3fbf42fda64b5e3b7911324bb28
+      size: 668
+    - path: artifacts/tables/similar_books_demo.csv
+      hash: md5
+      md5: fdfa3c6e1b0f053afebfc7b5f353a683
+      size: 1404
+  itemcf:
+    cmd: python -m src.stage4_itemcf
+    deps:
+    - path: artifacts/split/index_maps.npz
+      hash: md5
+      md5: 20c5238fec47ffc85b7cd6099c28f78d
+      size: 507910
+    - path: artifacts/split/test.csv
+      hash: md5
+      md5: caab1df5a7e44e7a8bbf3ce9a1d87f2b
+      size: 1590056
+    - path: artifacts/split/train.csv
+      hash: md5
+      md5: b90cf48be691afd456d0e5a78e49acdc
+      size: 22248674
+    - path: src/config.py
+      hash: md5
+      md5: 26c8093064cc1dba282184f864cd99c3
+      size: 889
+    - path: src/io_utils.py
+      hash: md5
+      md5: 9816ceee5f5c44a119fb96814d7c94ed
+      size: 3552
+    - path: src/models.py
+      hash: md5
+      md5: 6385604d287931796a55836d522fb849
+      size: 11422
+    - path: src/stage4_itemcf.py
+      hash: md5
+      md5: 4322e8d5b09615a3a017098cfc8a8ece
+      size: 3046
+    params:
+      params.yaml:
+        random_state: 42
+        relevance_threshold: 4
+        shrinkage_lambda: 10.0
+        top_k_neighbours: 20
+    outs:
+    - path: artifacts/models/R_train.npz
+      hash: md5
+      md5: e12028d8a1be9c9d2a00fe387bf24988
+      size: 2404130
+    - path: artifacts/models/S_topk.npz
+      hash: md5
+      md5: 40f7446f93b0281ed57944d3cccc1da3
+      size: 1084779
+    - path: artifacts/models/item_mean.npy
+      hash: md5
+      md5: 98ac640a1b09d71860dea276501bb2c3
+      size: 40128
+    - path: artifacts/tables/itemcf_demo.csv
+      hash: md5
+      md5: d6ea38615d4b3690b3835f604dc1508f
+      size: 96
+  svd:
+    cmd: python -m src.stage5_svd
+    deps:
+    - path: artifacts/models/R_train.npz
+      hash: md5
+      md5: e12028d8a1be9c9d2a00fe387bf24988
+      size: 2404130
+    - path: artifacts/models/S_topk.npz
+      hash: md5
+      md5: 40f7446f93b0281ed57944d3cccc1da3
+      size: 1084779
+    - path: artifacts/models/item_mean.npy
+      hash: md5
+      md5: 98ac640a1b09d71860dea276501bb2c3
+      size: 40128
+    - path: artifacts/split/index_maps.npz
+      hash: md5
+      md5: 20c5238fec47ffc85b7cd6099c28f78d
+      size: 507910
+    - path: artifacts/split/test.csv
+      hash: md5
+      md5: caab1df5a7e44e7a8bbf3ce9a1d87f2b
+      size: 1590056
+    - path: artifacts/split/train.csv
+      hash: md5
+      md5: b90cf48be691afd456d0e5a78e49acdc
+      size: 22248674
+    - path: src/config.py
+      hash: md5
+      md5: 26c8093064cc1dba282184f864cd99c3
+      size: 889
+    - path: src/io_utils.py
+      hash: md5
+      md5: 9816ceee5f5c44a119fb96814d7c94ed
+      size: 3552
+    - path: src/models.py
+      hash: md5
+      md5: 6385604d287931796a55836d522fb849
+      size: 11422
+    - path: src/stage5_svd.py
+      hash: md5
+      md5: bfc2919f4d13687495d04934e89c1700
+      size: 3039
+    params:
+      params.yaml:
+        chunk: 4096
+        random_state: 42
+        svd.n_epochs: 20
+        svd.n_factors: 100
+        top_k_neighbours: 20
+    outs:
+    - path: artifacts/models/svd_bundle.npz
+      hash: md5
+      md5: f0ec71e08371b6ba191f0767f766483e
+      size: 25624502
+    - path: artifacts/tables/rmse_table.csv
+      hash: md5
+      md5: ca1c8d555242b7bed74cad24c0032368
+      size: 291
+  evaluate:
+    cmd: python -m src.stage6_evaluate
+    deps:
+    - path: artifacts/models/R_train.npz
+      hash: md5
+      md5: e12028d8a1be9c9d2a00fe387bf24988
+      size: 2404130
+    - path: artifacts/models/S_topk.npz
+      hash: md5
+      md5: 40f7446f93b0281ed57944d3cccc1da3
+      size: 1084779
+    - path: artifacts/models/fav_train.npz
+      hash: md5
+      md5: e9ee487b8d003ef2b2974d8615ff2926
+      size: 1555912
+    - path: artifacts/models/item_mean.npy
+      hash: md5
+      md5: 98ac640a1b09d71860dea276501bb2c3
+      size: 40128
+    - path: artifacts/models/item_profiles.npz
+      hash: md5
+      md5: 7cac134b3c2a99a3aa41ef291f637276
+      size: 6056915
+    - path: artifacts/models/pop_scores.npy
+      hash: md5
+      md5: 1ef820b2453b9336fad1b7494a0fcae1
+      size: 40128
+    - path: artifacts/models/svd_bundle.npz
+      hash: md5
+      md5: f0ec71e08371b6ba191f0767f766483e
+      size: 25624502
+    - path: artifacts/split/index_maps.npz
+      hash: md5
+      md5: 20c5238fec47ffc85b7cd6099c28f78d
+      size: 507910
+    - path: artifacts/split/test.csv
+      hash: md5
+      md5: caab1df5a7e44e7a8bbf3ce9a1d87f2b
+      size: 1590056
+    - path: artifacts/split/train.csv
+      hash: md5
+      md5: b90cf48be691afd456d0e5a78e49acdc
+      size: 22248674
+    - path: src/config.py
+      hash: md5
+      md5: 26c8093064cc1dba282184f864cd99c3
+      size: 889
+    - path: src/io_utils.py
+      hash: md5
+      md5: 9816ceee5f5c44a119fb96814d7c94ed
+      size: 3552
+    - path: src/metrics.py
+      hash: md5
+      md5: ebdc719306397d68275644099cb30af0
+      size: 2508
+    - path: src/models.py
+      hash: md5
+      md5: 6385604d287931796a55836d522fb849
+      size: 11422
+    - path: src/stage6_evaluate.py
+      hash: md5
+      md5: 748f45c393e10db7075700800b646537
+      size: 4054
+    params:
+      params.yaml:
+        chunk: 4096
+        n_recs: 10
+        random_state: 42
+        relevance_threshold: 4
+        svd.n_factors: 100
+        top_k_neighbours: 20
+    outs:
+    - path: artifacts/figures/metrics_bar.png
+      hash: md5
+      md5: ae9ca3dccf4f879e8b5d6dc0e93d3b3e
+      size: 45402
+    - path: artifacts/tables/metrics_main.csv
+      hash: md5
+      md5: 713ff7df82f22dc0047b8e5cfbb0a2c8
+      size: 879
+  hybrid_cold:
+    cmd: python -m src.stage7_hybrid_cold
+    deps:
+    - path: artifacts/models/R_train.npz
+      hash: md5
+      md5: e12028d8a1be9c9d2a00fe387bf24988
+      size: 2404130
+    - path: artifacts/models/S_topk.npz
+      hash: md5
+      md5: 40f7446f93b0281ed57944d3cccc1da3
+      size: 1084779
+    - path: artifacts/models/fav_train.npz
+      hash: md5
+      md5: e9ee487b8d003ef2b2974d8615ff2926
+      size: 1555912
+    - path: artifacts/models/item_mean.npy
+      hash: md5
+      md5: 98ac640a1b09d71860dea276501bb2c3
+      size: 40128
+    - path: artifacts/models/item_profiles.npz
+      hash: md5
+      md5: 7cac134b3c2a99a3aa41ef291f637276
+      size: 6056915
+    - path: artifacts/models/pop_scores.npy
+      hash: md5
+      md5: 1ef820b2453b9336fad1b7494a0fcae1
+      size: 40128
+    - path: artifacts/models/svd_bundle.npz
+      hash: md5
+      md5: f0ec71e08371b6ba191f0767f766483e
+      size: 25624502
+    - path: artifacts/split/index_maps.npz
+      hash: md5
+      md5: 20c5238fec47ffc85b7cd6099c28f78d
+      size: 507910
+    - path: artifacts/split/test.csv
+      hash: md5
+      md5: caab1df5a7e44e7a8bbf3ce9a1d87f2b
+      size: 1590056
+    - path: artifacts/split/train.csv
+      hash: md5
+      md5: b90cf48be691afd456d0e5a78e49acdc
+      size: 22248674
+    - path: artifacts/tables/metrics_main.csv
+      hash: md5
+      md5: 713ff7df82f22dc0047b8e5cfbb0a2c8
+      size: 879
+    - path: src/config.py
+      hash: md5
+      md5: 26c8093064cc1dba282184f864cd99c3
+      size: 889
+    - path: src/io_utils.py
+      hash: md5
+      md5: 9816ceee5f5c44a119fb96814d7c94ed
+      size: 3552
+    - path: src/metrics.py
+      hash: md5
+      md5: ebdc719306397d68275644099cb30af0
+      size: 2508
+    - path: src/models.py
+      hash: md5
+      md5: 6385604d287931796a55836d522fb849
+      size: 11422
+    - path: src/stage7_hybrid_cold.py
+      hash: md5
+      md5: 03c5dd3c8a88c07656a18193d075e756
+      size: 7427
+    params:
+      params.yaml:
+        chunk: 4096
+        cold.keep_ratings: 3
+        cold.n_users: 4000
+        cold.svd_epochs: 10
+        cold.w_content: 0.6
+        hybrid.w_main: 0.5
+        hybrid.w_prior: 0.05
+        min_ratings_popular: 100
+        n_recs: 10
+        random_state: 42
+        relevance_threshold: 4
+        svd.n_factors: 100
+        top_k_neighbours: 20
+    outs:
+    - path: artifacts/figures/metrics_final.png
+      hash: md5
+      md5: cf7518ba07d3253e0abde3abb08f1671
+      size: 44312
+    - path: artifacts/tables/metrics_cold.csv
+      hash: md5
+      md5: c18fd627cca9d14adb893c4f7af8aa7c
+      size: 667
+    - path: artifacts/tables/metrics_full.csv
+      hash: md5
+      md5: 9ab9833319f871ec5f6ea5efc180bb9d
+      size: 1186

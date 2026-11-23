@@ -1,0 +1,12 @@
+{
+  "train_size": 914600,
+  "test_size": 64878,
+  "test_share_percent": 6.6,
+  "eval_users": 32439,
+  "total_users": 53424,
+  "total_books": 10000,
+  "users_without_train": 0,
+  "users_lt5_train": 20225,
+  "users_lt5_train_percent": 37.9,
+  "books_without_train": 0
+}
